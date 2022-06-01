@@ -1,0 +1,10 @@
+
+ClientServer/target/
+
+SharedLibrary/target/
+
+*.class
+
+AdminServer/target/
+
+logs/
