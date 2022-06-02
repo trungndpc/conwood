@@ -4,26 +4,26 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import vn.conwood.common.Constant;
+import vn.conwood.client.config.AppConfig;
 import vn.conwood.common.status.StatusUser;
 import vn.conwood.jpa.entity.UserEntity;
 import vn.conwood.jpa.repository.UserRepository;
 import vn.conwood.jpa.specification.UserSpecification;
 
-import java.util.List;
-
 @Service
 public class UserService {
     private final RestTemplate restTemplate = new RestTemplate();
-    private static final Logger LOGGER = LogManager.getLogger(UserService.class);
+
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private UserSpecification userSpecification;
+
+    @Autowired
+    private AppConfig appConfig;
 
     public UserEntity register(UserEntity userEntity) throws Exception {
         if (userEntity.getStatus() != StatusUser.WAIT_COMPLETE_PROFILE) {
@@ -48,7 +48,7 @@ public class UserService {
         String utm = userEntity.getUtm();
         if (!StringUtils.isEmpty(utm)
                 && ("WORKSHOP_001".equals(utm) || "SALER".equals(utm) || "TRADER".equals(utm))) {
-            this.restTemplate.getForEntity(Constant.ADMIN_DOMAIN
+            this.restTemplate.getForEntity(appConfig.ADMIN_DOMAIN
                     + "/int/auto-approved?uid=" + userEntity.getId(), String.class);
         }
         return userEntity;

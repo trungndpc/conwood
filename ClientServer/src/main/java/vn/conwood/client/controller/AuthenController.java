@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import vn.conwood.common.AppCommon;
+import vn.conwood.client.config.AppConfig;
 import vn.conwood.common.Permission;
 import vn.conwood.common.status.StatusUser;
 import vn.conwood.jpa.entity.UserEntity;
@@ -28,6 +28,9 @@ public class AuthenController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private AppConfig appConfig;
+
     public static final ConcurrentHashMap<String, Integer> MAP_FOLLOWER = new ConcurrentHashMap<>();
 
     @GetMapping(value = "/dang-ky", produces = MediaType.TEXT_HTML_VALUE)
@@ -40,7 +43,7 @@ public class AuthenController {
                            HttpServletResponse response) throws Exception {
         UserEntity user = AuthenticationUtils.getAuthUser(authentication);
         if (user == null && StringUtils.isEmpty(code)) {
-            StringBuilder hookBuilder = new StringBuilder(AppCommon.INSTANCE.getDomain());
+            StringBuilder hookBuilder = new StringBuilder(appConfig.CLIENT_DOMAIN);
             hookBuilder.append("/dang-ky");
             if (!StringUtils.isEmpty(continueUrl)) {
                 hookBuilder.append("?continueUrl=");
@@ -63,7 +66,7 @@ public class AuthenController {
                     }
                 }
             }
-            StringBuilder urlAuthenZaloBuilder = new StringBuilder(AppCommon.INSTANCE.getAuthenZaloUrl());
+            StringBuilder urlAuthenZaloBuilder = new StringBuilder(appConfig.getAuthenZaloUrl());
             urlAuthenZaloBuilder.append("&redirect_uri=");
             urlAuthenZaloBuilder.append(HttpUtil.encodeUrl(hookBuilder.toString()));
             response.sendRedirect(urlAuthenZaloBuilder.toString());
@@ -104,7 +107,7 @@ public class AuthenController {
 
             if (StringUtils.isEmpty(user.getFollowerId())) {
                 response.sendRedirect(new StringBuilder("https://zalo.me/")
-                        .append(AppCommon.INSTANCE.getOAId()).toString());
+                        .append(appConfig.ZALO_OA_ID).toString());
                 return "OK";
             }
         }
@@ -127,11 +130,11 @@ public class AuthenController {
         if(userEntity == null) {
             userEntity = new UserEntity();
             userEntity.setId(0);
+
             //Waiting event follow
             Integer id = MAP_FOLLOWER.getOrDefault(zaloUserEntity.getId(), null);
             if (id == null){
                 for (int i = 0; i < 10; i++) {
-//                    userEntity = userRepository.findByZaloId(zaloUserEntity.getId());
                     id = MAP_FOLLOWER.getOrDefault(zaloUserEntity.getId(), null);
                     if (id != null) {
                         break;

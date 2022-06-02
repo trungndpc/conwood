@@ -6,13 +6,13 @@ import org.jobrunr.jobs.annotations.Job;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import vn.conwood.admin.common.UserStatus;
+import vn.conwood.admin.config.AppConfig;
 import vn.conwood.admin.message.PostBroadcastMessage;
 import vn.conwood.admin.message.User;
 import vn.conwood.admin.service.BroadcastService;
 import vn.conwood.admin.service.PostService;
 import vn.conwood.admin.service.UserService;
 import vn.conwood.admin.woker.task.PostBroadcastTask;
-import vn.conwood.common.Constant;
 import vn.conwood.common.status.StatusBroadcast;
 import vn.conwood.jpa.entity.BroadcastEntity;
 import vn.conwood.jpa.entity.PostEntity;
@@ -34,6 +34,9 @@ public class PostBroadcastWorker {
     @Autowired
     private PostService postService;
 
+    @Autowired
+    private AppConfig appConfig;
+
     @Job(name = "POST_BROADCAST", retries = 1)
     public void execute(PostBroadcastTask task) {
         int totalUid = 0;
@@ -51,7 +54,7 @@ public class PostBroadcastWorker {
             for (User user: users) {
                 PostBroadcastMessage postBroadcastMessage = new PostBroadcastMessage(user);
                 postBroadcastMessage.setImg(postEntity.getCover());
-                postBroadcastMessage.setLink(Constant.CLIENT_DOMAIN + "/bai-viet/" + postEntity.getId() + "?brcId=" + broadcastEntity.getId());
+                postBroadcastMessage.setLink(appConfig.CLIENT_DOMAIN + "/bai-viet/" + postEntity.getId() + "?brcId=" + broadcastEntity.getId());
                 postBroadcastMessage.setSummary(postEntity.getSummary());
                 postBroadcastMessage.setTitle(postEntity.getTitle());
                 if (postBroadcastMessage.send()) {
