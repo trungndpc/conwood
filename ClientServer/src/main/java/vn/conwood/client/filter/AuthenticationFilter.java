@@ -3,6 +3,7 @@ package vn.conwood.client.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import vn.conwood.client.config.Constant;
 import vn.conwood.common.status.StatusUser;
 import vn.conwood.jpa.repository.UserRepository;
 import io.jsonwebtoken.Claims;
@@ -67,7 +68,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         }   catch (Exception ex) {
-//            LOGGER.error(ex.getMessage(), ex);
+            LOGGER.error(ex.getMessage(), ex);
             resp.setStatus(HttpStatus.UNAUTHORIZED.value());
             resp.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
             resp.setHeader("Content-Type", "application/json");
@@ -81,7 +82,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String getSession(HttpServletRequest req) {
-        return HttpUtil.getCookie("_rtl_insee_ss", req);
+        return HttpUtil.getCookie(Constant.CONWOOD_SESSION_NAME, req);
     }
 
 }

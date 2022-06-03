@@ -8,7 +8,8 @@ public class RegisterForm {
     private Integer cityId;
     private Integer districtId;
     private String name;
-    private List<Integer> cements;
+
+    private Integer roleId;
 
     public String getPhone() {
         return phone;
@@ -50,11 +51,11 @@ public class RegisterForm {
         this.name = name;
     }
 
-    public List<Integer> getCements() {
-        return cements;
+    public Integer getRoleId() {
+        return roleId;
     }
 
-    public void setCements(List<Integer> cements) {
-        this.cements = cements;
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
     }
 }

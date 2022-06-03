@@ -14,7 +14,6 @@ public class UserDTO {
     private Integer birthday;
     private Integer cityId;
     private Integer districtId;
-    private List<Integer> products;
     private String address;
     private String inseeId;
 
@@ -104,14 +103,6 @@ public class UserDTO {
 
     public void setDistrictId(Integer districtId) {
         this.districtId = districtId;
-    }
-
-    public List<Integer> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Integer> products) {
-        this.products = products;
     }
 
     public String getAddress() {

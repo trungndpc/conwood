@@ -70,6 +70,11 @@ public class UserController {
             if (!StringUtils.isEmpty(form.getAddress())) {
                 user.setAddress(form.getAddress());
             }
+
+            if (form.getRoleId() != null && form.getRoleId() != 0) {
+                user.setRoleId(form.getRoleId());
+            }
+
             user = userService.register(user);
             response.setData(userConverter.convert2DTO(user));
         }catch (Exception e) {

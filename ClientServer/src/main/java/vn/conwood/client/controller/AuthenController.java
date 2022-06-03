@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import vn.conwood.client.config.AppConfig;
+import vn.conwood.client.config.Constant;
 import vn.conwood.common.Permission;
 import vn.conwood.common.status.StatusUser;
 import vn.conwood.jpa.entity.UserEntity;
@@ -20,6 +21,7 @@ import vn.conwood.util.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
@@ -77,17 +79,20 @@ public class AuthenController {
             String accessToken = ZaloService.INSTANCE.getAccessToken(code);
             if (StringUtils.isEmpty(accessToken)) {
                 response.sendRedirect("/oops");
+                LOGGER.error("failed: accessToken");
                 return "OK";
             }
 
             ZaloUserEntity zaloUserEntity = ZaloService.INSTANCE.getUserInfo(accessToken);
             if (zaloUserEntity == null) {
+                LOGGER.error("can not get user info");
                 response.sendRedirect("/oops");
                 return "OK";
             }
 
             user = convert2UserEntity(zaloUserEntity, src);
             if (user == null) {
+                LOGGER.error("convert2UserEntity is null");
                 response.sendRedirect("/oops");
                 return "OK";
             }
@@ -96,11 +101,10 @@ public class AuthenController {
                 user.setUtm(utm);
             }
 
-            user.setRoleId(Permission.RETAILER.getId());
             //to get user id to store into session
             user = userRepository.saveAndFlush(user);
             String session = TokenUtil.generate(user.getId(), user.getPhone(), 43200000L);
-            AuthenticationUtils.writeCookie("_rtl_insee_ss", session, response);
+            AuthenticationUtils.writeCookie(Constant.CONWOOD_SESSION_NAME, session, response);
             List<String> lstSession = ListUtils.putWithMaximumSize(session, user.getSessions());
             user.setSessions(lstSession);
             user = userRepository.saveAndFlush(user);
@@ -112,25 +116,17 @@ public class AuthenController {
             }
         }
 
-        if (user.getRoleId() == Permission.RETAILER.getId()) {
-            if (user.getStatus() == StatusUser.WAIT_COMPLETE_PROFILE) {
-                return RenderUtils.render("index.html");
-            }else {
-                response.sendRedirect(StringUtils.isEmpty(continueUrl) ? "/" : continueUrl);
-                return "OK";
-            }
-        }else {
-            response.sendRedirect("/oops");
-            return "OK";
+        if (user.getStatus() == StatusUser.WAIT_COMPLETE_PROFILE) {
+            return RenderUtils.render("index.html");
         }
+
+        response.sendRedirect(StringUtils.isEmpty(continueUrl) ? "/" : continueUrl);
+        return "OK";
     }
 
     private UserEntity convert2UserEntity(ZaloUserEntity zaloUserEntity, String src) {
         UserEntity userEntity = userRepository.findByZaloId(zaloUserEntity.getId());
         if(userEntity == null) {
-            userEntity = new UserEntity();
-            userEntity.setId(0);
-
             //Waiting event follow
             Integer id = MAP_FOLLOWER.getOrDefault(zaloUserEntity.getId(), null);
             if (id == null){
@@ -150,43 +146,32 @@ public class AuthenController {
 
         //Remove to ignore over heap
         MAP_FOLLOWER.remove(userEntity.getZaloId());
-        if (userEntity.getRoleId() == null) {
-            userEntity.setRoleId(Permission.ANONYMOUS.getId());
-            userEntity.setName(zaloUserEntity.getName());
-            userEntity.setZaloId(zaloUserEntity.getId());
-            userEntity.setPassword(new String());
-            userEntity.setAvatar(zaloUserEntity.getAvatar());
-            userEntity.setStatus(StatusUser.WAIT_COMPLETE_PROFILE);
-            if (!StringUtils.isEmpty(zaloUserEntity.getBirthday())) {
-                userEntity.setBirthday(TimeUtil.getTime(zaloUserEntity.getBirthday()));
-            }
-        }
 
-        if (userEntity.getStatus() == StatusUser.WAITING_ACTIVE) {
-            userEntity.setStatus(StatusUser.APPROVED);
-            userEntity.setUtm("ZNS");
-            userEntity.setRoleId(Permission.RETAILER.getId());
-            userEntity.setAvatar(zaloUserEntity.getAvatar());
-            userEntity.setPassword(new String());
-            userEntity.setRoleId(Permission.RETAILER.getId());
-            if (!StringUtils.isEmpty(zaloUserEntity.getBirthday())) {
-                userEntity.setBirthday(TimeUtil.getTime(zaloUserEntity.getBirthday()));
-            }
-            userRepository.saveAndFlush(userEntity);
+        if (userEntity.getStatus() == StatusUser.APPROVED) {
             return userEntity;
         }
 
+        userEntity.setZaloId(zaloUserEntity.getId());
+        if (userEntity.getRoleId() == null) {
+            userEntity.setName(zaloUserEntity.getName());
+            userEntity.setPassword("");
+            userEntity.setAvatar(zaloUserEntity.getAvatar());
+            userEntity.setStatus(StatusUser.WAIT_COMPLETE_PROFILE);
+            userEntity.setRoleId(Permission.ANONYMOUS.getId());
+        }
+
+        if (!StringUtils.isEmpty(zaloUserEntity.getBirthday())) {
+            userEntity.setBirthday(TimeUtil.getTime(zaloUserEntity.getBirthday()));
+        }
 
         if (!StringUtils.isEmpty(src)) {
-            try {
+            try{
                 int customerId =  Integer.parseInt(src);
-                UserEntity customer = userRepository.getOne(customerId);
-                if (customer != null && customer.getStatus() == StatusUser.WAITING_ACTIVE) {
-                    userEntity = link2CustomerProfile(userEntity, customer);
+                Optional<UserEntity> optionalUser = userRepository.findById(customerId);
+                if (optionalUser.isPresent() && optionalUser.get().getStatus() == StatusUser.WAITING_ACTIVE) {
+                    userEntity = link2CustomerProfile(userEntity, optionalUser.get());
                 }
-            }catch (Exception e) {
-                LOGGER.error(e.getMessage(), e);
-            }
+            }catch (Exception e) {}
         }
         return userEntity;
     }
@@ -198,6 +183,7 @@ public class AuthenController {
         newUserEntity.setDistrictId(customer.getDistrictId());
         newUserEntity.setAddress(customer.getAddress());
         newUserEntity.setStatus(StatusUser.APPROVED);
+        newUserEntity.setUtm("ZNS");
         userRepository.delete(customer);
         userRepository.saveAndFlush(newUserEntity);
         return newUserEntity;

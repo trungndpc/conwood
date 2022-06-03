@@ -63,10 +63,6 @@ public class HomeController {
             response.sendRedirect("/dang-ky?continueUrl=" + HttpUtil.encodeUrl(continueUrl));
             return "OK";
         }
-        if (!isRetailer(authUser)) {
-            response.sendRedirect("/oops");
-            return "OK";
-        }
 
         PromotionEntity promotionEntity = stockPromotionService.find(authUser);
         if (promotionEntity != null) {
@@ -90,15 +86,7 @@ public class HomeController {
             response.sendRedirect("/dang-ky?continueUrl=" + HttpUtil.encodeUrl(continueUrl));
             return "OK";
         }
-        if (!isRetailer(authUser)) {
-            response.sendRedirect("/oops");
-            return "OK";
-        }
         return RenderUtils.render("index.html");
-    }
-
-    private boolean isRetailer(UserEntity userEntity) {
-        return userEntity.getRoleId() == Permission.RETAILER.getId();
     }
 
 }
