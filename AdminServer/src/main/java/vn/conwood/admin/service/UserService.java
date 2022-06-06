@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import vn.conwood.admin.common.UserStatus;
 import vn.conwood.admin.message.ApprovedUserMessage;
 import vn.conwood.admin.message.RejectedUserMessage;
 import vn.conwood.admin.message.User;
@@ -45,7 +44,7 @@ public class UserService {
             throw new Exception("phone is exits!");
         }
         customer.setRoleId(Permission.RETAILER.getId());
-        customer.setStatus(UserStatus.WAITING_ACTIVE);
+        customer.setStatus(StatusUser.WAITING_ACTIVE);
         customer = userRepository.saveAndFlush(customer);
         return customer;
     }

@@ -11,9 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
-import vn.conwood.admin.common.AppCommon;
+import vn.conwood.admin.config.AppConfig;
 import vn.conwood.admin.wrapper.entity.ZaloMessage;
 import vn.conwood.admin.wrapper.entity.ZaloUserEntity;
+import vn.conwood.util.BeanUtil;
 
 import java.nio.charset.StandardCharsets;
 
@@ -23,22 +24,26 @@ public class ZaloService {
     public static final ZaloService INSTANCE = new ZaloService();
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+    private final AppConfig appConfig;
     private static final String GET_ACCESS_TOKEN_URL = "https://oauth.zaloapp.com/v3/access_token?app_id={1}&app_secret={2}&code={3}";
     private static final String GET_USER_INFO = "https://graph.zalo.me/v2.0/me?fields=id,name,picture,birthday,gender&access_token=";
     private static final String END_POINT = "https://openapi.zalo.me/v2.0/oa/message?access_token={1}";
-    private static final String ZNS_END_POINT = "https://business.openapi.zalo.me/message/template";
+    private static final String ZNS_END_POINT = "";
 
     public ZaloService() {
+        this.appConfig = BeanUtil.getBean(AppConfig.class);
+        this.objectMapper = new ObjectMapper();
         this.restTemplate = new RestTemplate();
         restTemplate.getMessageConverters()
                 .add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
-        this.objectMapper = new ObjectMapper();
     }
 
     public String getAccessToken(String oauthCode) throws Exception {
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(GET_ACCESS_TOKEN_URL, String.class,
-                AppCommon.INSTANCE.getZaloAppId(),
-                AppCommon.INSTANCE.getSecretZaloApp(), oauthCode);
+                this.appConfig.ZALO_APP_ID,
+                this.appConfig.ZALO_SECRET_APP,
+                oauthCode);
+
         if (responseEntity.getStatusCode() != HttpStatus.OK) {
             throw new Exception(responseEntity.getBody());
         }
@@ -71,7 +76,8 @@ public class ZaloService {
         msWrapper.put("message", new JSONObject(value));
         ResponseEntity<String> zaloResponseResponseEntity = restTemplate.postForEntity(END_POINT,
                 msWrapper.toString(), String.class,
-                AppCommon.INSTANCE.getAccessToken());
+                this.appConfig.ZALO_OA_ACCESS_TOKEN);
+        LOGGER.error(zaloResponseResponseEntity);
         return zaloResponseResponseEntity.getStatusCode() == HttpStatus.OK;
     }
 
@@ -82,10 +88,9 @@ public class ZaloService {
         form.put("tracking_id", trackingDataID);
         form.put("template_data", templateData);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("access_token", AppCommon.INSTANCE.getAccessToken());
+        headers.add("access_token", appConfig.ZALO_OA_ACCESS_TOKEN);
         HttpEntity<String> entity = new HttpEntity<>(form.toString(), headers);
         ResponseEntity<String> response = restTemplate.postForEntity(ZNS_END_POINT, entity, String.class);
-        LOGGER.info(response);
         return response.getStatusCode() == HttpStatus.OK;
     }
 }

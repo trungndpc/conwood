@@ -12,6 +12,8 @@ public class StockForm {
     private String detail;
     private List<Integer> cements;
     private Integer bags;
+    private String address;
+    private String phone;
 
     public Integer getId() {
         return id;
@@ -75,5 +77,21 @@ public class StockForm {
 
     public void setBags(Integer bags) {
         this.bags = bags;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }
