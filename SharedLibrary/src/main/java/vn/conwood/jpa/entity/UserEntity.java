@@ -33,6 +33,8 @@ public class UserEntity extends BaseEntity {
     private String inseeId;
     private String note;
     private String utm;
+    private String nameCompany;
+    private String position;
 
     @Type(type = "list-array")
     @Column(name = "sessions", columnDefinition = "character varying[]")
@@ -184,5 +186,21 @@ public class UserEntity extends BaseEntity {
 
     public void setUtm(String utm) {
         this.utm = utm;
+    }
+
+    public String getNameCompany() {
+        return nameCompany;
+    }
+
+    public void setNameCompany(String nameCompany) {
+        this.nameCompany = nameCompany;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
     }
 }

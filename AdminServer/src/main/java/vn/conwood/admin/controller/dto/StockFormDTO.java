@@ -13,6 +13,8 @@ public class StockFormDTO extends FormDTO {
     private List<Integer> cements;
     private Integer bags;
     private String note;
+    private String address;
+    private String phone;
 
     public String getJsonImgs() {
         return jsonImgs;
@@ -44,5 +46,21 @@ public class StockFormDTO extends FormDTO {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

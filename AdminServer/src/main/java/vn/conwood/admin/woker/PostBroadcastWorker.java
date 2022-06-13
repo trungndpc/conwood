@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import org.jobrunr.jobs.annotations.Job;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import vn.conwood.admin.common.UserStatus;
 import vn.conwood.admin.config.AppConfig;
 import vn.conwood.admin.message.PostBroadcastMessage;
 import vn.conwood.admin.message.User;
@@ -14,6 +13,7 @@ import vn.conwood.admin.service.PostService;
 import vn.conwood.admin.service.UserService;
 import vn.conwood.admin.woker.task.PostBroadcastTask;
 import vn.conwood.common.status.StatusBroadcast;
+import vn.conwood.common.status.StatusUser;
 import vn.conwood.jpa.entity.BroadcastEntity;
 import vn.conwood.jpa.entity.PostEntity;
 import vn.conwood.jpa.entity.UserEntity;
@@ -80,7 +80,7 @@ public class PostBroadcastWorker {
     private User getUser(int uid) {
         try{
             UserEntity userEntity = userService.findById(uid);
-            if (userEntity.getStatus() != UserStatus.APPROVED || userEntity.getFollowerId() == null) {
+            if (userEntity.getStatus() != StatusUser.APPROVED || userEntity.getFollowerId() == null) {
                 throw new Exception("user is not valid to send broadcast uid: " + uid);
             }
             return new User(userEntity.getId(), userEntity.getFollowerId(), userEntity.getName());

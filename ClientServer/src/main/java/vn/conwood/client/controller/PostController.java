@@ -44,7 +44,7 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(path = "/get-for-me")
+    @GetMapping(path = "/list")
     public ResponseEntity<BaseResponse> get(Authentication auth) {
         BaseResponse response = new BaseResponse();
         try{

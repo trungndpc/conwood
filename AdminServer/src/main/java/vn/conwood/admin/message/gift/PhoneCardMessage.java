@@ -2,16 +2,18 @@ package vn.conwood.admin.message.gift;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import vn.conwood.admin.common.AppCommon;
+import vn.conwood.admin.config.AppConfig;
 import vn.conwood.admin.message.Message;
 import vn.conwood.admin.message.User;
 import vn.conwood.admin.wrapper.ZaloService;
 import vn.conwood.admin.wrapper.entity.ZaloMessage;
+import vn.conwood.util.BeanUtil;
 
 import java.util.Arrays;
 
 public class PhoneCardMessage extends Message {
     private static final Logger LOGGER = LogManager.getLogger(PhoneCardMessage.class);
+    private static final AppConfig APP_CONFIG = BeanUtil.getBean(AppConfig.class);
     private static final String TITLE = "Chúc mừng !!!";
     private static final String SUB_TITLE_FORMAT = "Chúc mừng quý cửa hàng %s đã nhận được thẻ điện thoại %s từ chương trình khuyến " +
             "mãi của câu lạc bộ INSEE Cửa Hàng Ngoại Hạng. Vui lòng bấm vào tin nhắn để nhận được phần thưởng.";
@@ -30,7 +32,7 @@ public class PhoneCardMessage extends Message {
         String subTitle = String.format(SUB_TITLE_FORMAT, storeName, giftTitle);
         ZaloMessage.Attachment.Payload.Element.Action action = new ZaloMessage.Attachment.Payload.Element.Action();
         action.type = "oa.open.url";
-        action.url = AppCommon.INSTANCE.getDomain() + "/qua-tang/" + giftId;
+        action.url = APP_CONFIG.CLIENT_DOMAIN + "/qua-tang/" + giftId;
 
         ZaloMessage.Attachment.Payload.Element element = new ZaloMessage.Attachment.Payload.Element();
         element.title = TITLE;

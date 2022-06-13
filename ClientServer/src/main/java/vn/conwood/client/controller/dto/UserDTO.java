@@ -16,6 +16,8 @@ public class UserDTO {
     private Integer districtId;
     private String address;
     private String inseeId;
+    private String nameCompany;
+    private String position;
 
     public Integer getId() {
         return id;
@@ -119,5 +121,21 @@ public class UserDTO {
 
     public void setInseeId(String inseeId) {
         this.inseeId = inseeId;
+    }
+
+    public String getNameCompany() {
+        return nameCompany;
+    }
+
+    public void setNameCompany(String nameCompany) {
+        this.nameCompany = nameCompany;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
     }
 }

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vn.conwood.admin.common.BaseResponse;
 import vn.conwood.admin.common.ErrorCode;
-import vn.conwood.admin.common.UserStatus;
 import vn.conwood.admin.service.UserService;
+import vn.conwood.common.status.StatusUser;
 
 @RestController
 @RequestMapping("/int")
@@ -25,7 +25,7 @@ public class InternalController {
     public ResponseEntity<BaseResponse> autoApproval(@RequestParam(required = true) int uid) {
         BaseResponse response = new BaseResponse();
         try{
-            userService.updateStatus(uid, UserStatus.APPROVED, null);
+            userService.updateStatus(uid, StatusUser.APPROVED, null);
             response.setError(0);
         }catch (Exception e) {
             LOGGER.error(e.getMessage(), e);

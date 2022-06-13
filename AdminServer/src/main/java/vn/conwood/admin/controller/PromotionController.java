@@ -38,6 +38,25 @@ public class PromotionController {
     @Autowired
     private StockConverter stockConverter;
 
+    @PostMapping(path = "/create", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<BaseResponse> create(@RequestBody PromotionForm form) {
+        BaseResponse response = new BaseResponse();
+        try{
+            switch (form.getType()) {
+                case TypePromotion.STOCK_PROMOTION_TYPE :
+                    StockPromotionEntity stockPromotionEntity = stockConverter.convert2Entity(form);
+                    stockPromotionEntity = stockPromotionService.create(stockPromotionEntity);
+                    response.setData(promotionConverter.convert2DTO(stockPromotionEntity));
+                    break;
+            }
+        }catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            response.setError(ErrorCode.FAILED);
+            response.setMsg(e.getMessage());
+        }
+        return ResponseEntity.ok(response);
+    }
+
 
 
     @PostMapping(path = "/update", consumes = "application/json", produces = "application/json")

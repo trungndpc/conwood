@@ -8,6 +8,8 @@ public class RegisterForm {
     private Integer cityId;
     private Integer districtId;
     private String name;
+    private String nameCompany;
+    private String position;
 
     private Integer roleId;
 
@@ -57,5 +59,21 @@ public class RegisterForm {
 
     public void setRoleId(Integer roleId) {
         this.roleId = roleId;
+    }
+
+    public String getNameCompany() {
+        return nameCompany;
+    }
+
+    public void setNameCompany(String nameCompany) {
+        this.nameCompany = nameCompany;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
     }
 }

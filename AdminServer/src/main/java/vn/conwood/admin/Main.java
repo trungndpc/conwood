@@ -7,9 +7,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@ComponentScan(basePackages = "vn.insee")
-@EnableJpaRepositories(basePackages = {"vn.insee.jpa"})
-@EntityScan(basePackages = {"vn.insee.jpa"})
+@ComponentScan(basePackages = "vn.conwood")
+@EnableJpaRepositories(basePackages = {"vn.conwood.jpa"})
+@EntityScan(basePackages = {"vn.conwood.jpa"})
 @SpringBootApplication
 @EnableScheduling
 public class Main  {

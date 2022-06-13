@@ -75,6 +75,16 @@ public class UserController {
                 user.setRoleId(form.getRoleId());
             }
 
+            LOGGER.error("nameCompany: " + form.getNameCompany());
+            LOGGER.error("position: " + form.getPosition());
+            if (form.getNameCompany() != null && !StringUtils.isEmpty(form.getNameCompany())) {
+                user.setNameCompany(form.getNameCompany());
+            }
+
+            if (form.getPosition() != null && !StringUtils.isEmpty(form.getPosition())) {
+                user.setPosition(form.getPosition());
+            }
+
             user = userService.register(user);
             response.setData(userConverter.convert2DTO(user));
         }catch (Exception e) {
