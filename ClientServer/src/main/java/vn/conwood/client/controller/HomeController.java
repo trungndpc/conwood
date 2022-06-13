@@ -48,8 +48,7 @@ public class HomeController {
     @ResponseBody
     public String introduce(HttpServletResponse response) throws
             IOException {
-        response.sendRedirect("/");
-        return "OK";
+        return RenderUtils.render("index.html");
     }
 
 
