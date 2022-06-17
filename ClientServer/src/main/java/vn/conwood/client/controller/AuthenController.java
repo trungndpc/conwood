@@ -101,6 +101,11 @@ public class AuthenController {
                 user.setUtm(utm);
             }
 
+            if (user.getStatus() == StatusUser.WAITING_ACTIVE) {
+                user.setStatus(StatusUser.APPROVED);
+                user.setUtm("ZNS");
+            }
+
             //to get user id to store into session
             user = userRepository.saveAndFlush(user);
             String session = TokenUtil.generate(user.getId(), user.getPhone(), 43200000L);
@@ -152,10 +157,10 @@ public class AuthenController {
         }
 
         userEntity.setZaloId(zaloUserEntity.getId());
+        userEntity.setAvatar(zaloUserEntity.getAvatar());
         if (userEntity.getRoleId() == null) {
             userEntity.setName(zaloUserEntity.getName());
             userEntity.setPassword("");
-            userEntity.setAvatar(zaloUserEntity.getAvatar());
             userEntity.setStatus(StatusUser.WAIT_COMPLETE_PROFILE);
             userEntity.setRoleId(Permission.ANONYMOUS.getId());
         }
@@ -164,29 +169,8 @@ public class AuthenController {
             userEntity.setBirthday(TimeUtil.getTime(zaloUserEntity.getBirthday()));
         }
 
-        if (!StringUtils.isEmpty(src)) {
-            try{
-                int customerId =  Integer.parseInt(src);
-                Optional<UserEntity> optionalUser = userRepository.findById(customerId);
-                if (optionalUser.isPresent() && optionalUser.get().getStatus() == StatusUser.WAITING_ACTIVE) {
-                    userEntity = link2CustomerProfile(userEntity, optionalUser.get());
-                }
-            }catch (Exception e) {}
-        }
         return userEntity;
     }
 
-    private UserEntity link2CustomerProfile(UserEntity  newUserEntity, UserEntity customer) {
-        newUserEntity.setPhone(customer.getPhone());
-        newUserEntity.setName(customer.getName());
-        newUserEntity.setCityId(customer.getCityId());
-        newUserEntity.setDistrictId(customer.getDistrictId());
-        newUserEntity.setAddress(customer.getAddress());
-        newUserEntity.setStatus(StatusUser.APPROVED);
-        newUserEntity.setUtm("ZNS");
-        userRepository.delete(customer);
-        userRepository.saveAndFlush(newUserEntity);
-        return newUserEntity;
-    }
 
 }

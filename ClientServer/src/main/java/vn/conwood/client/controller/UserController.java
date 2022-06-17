@@ -75,8 +75,6 @@ public class UserController {
                 user.setRoleId(form.getRoleId());
             }
 
-            LOGGER.error("nameCompany: " + form.getNameCompany());
-            LOGGER.error("position: " + form.getPosition());
             if (form.getNameCompany() != null && !StringUtils.isEmpty(form.getNameCompany())) {
                 user.setNameCompany(form.getNameCompany());
             }

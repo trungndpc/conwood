@@ -19,7 +19,7 @@ import java.util.List;
 
 @Component
 public class ZNSBroadcastWorker {
-    private static final String TEMPLATE_ID = "221294";
+    private static final String TEMPLATE_ID = "227387";
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Autowired
@@ -43,15 +43,15 @@ public class ZNSBroadcastWorker {
                 if (userEntity.getStatus() == StatusUser.WAITING_ACTIVE) {
                     totalUidAfterBuildUser++;
                     JSONObject data = new JSONObject();
-                    data.put("customer_name", userEntity.getName());
-                    data.put("product_name", "Xi măng");
+                    data.put("product_name", "Xi măng gỗ CONWOOD");
                     data.put("customer_code", userEntity.getInseeId());
-                    data.put("order_date", "01/01/2022");
+                    data.put("customer_name", userEntity.getName());
+                    data.put("order_date", "01/06/2022");
+                    data.put("order_code", "ZNS" + userEntity.getId());
                     String phone = userEntity.getPhone();
                     if (phone.startsWith("0")) {
                         phone = phone.replaceFirst("0", "84");
                     }
-                    LOGGER.error("SEND................: " + phone);
                     ZaloService.INSTANCE.sendZNS(phone, TEMPLATE_ID, userEntity.getPhone(), data);
                     totalSuccessSend++;
                 }

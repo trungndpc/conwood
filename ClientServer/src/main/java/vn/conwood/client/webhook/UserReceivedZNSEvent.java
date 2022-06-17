@@ -25,7 +25,6 @@ public class UserReceivedZNSEvent extends ZaloEvent{
             UserReceivedZNSMessage userReceivedZNSMessage = ((UserReceivedZNSMessage)zaloWebhookMessage);
             UserReceivedZNSMessage.Content message = userReceivedZNSMessage.getMessage();
             String phoneTracking = message.getTracking_id();
-
             if (phoneTracking != null && !StringUtils.isEmpty(phoneTracking)) {
                 UserEntity userEntity = userService.findByPhone(phoneTracking);
                 if (userEntity != null) {

@@ -3,8 +3,8 @@ package vn.conwood.common;
 public enum Permission {
 
     ADMIN(1, "Admin"),
-    CONSTRUCTOR(2, "Constructor"),
-    RETAILER(3, "Retailer"),
+    CONSTRUCTOR(2, "Nhà thầu"),
+    ARCHITECTURE(3, "Kiến trúc sư"),
     ANONYMOUS(0, "Anonymous");
 
     private int id;
@@ -27,7 +27,7 @@ public enum Permission {
         switch (id) {
             case 1 : return ADMIN;
             case 2 : return CONSTRUCTOR;
-            case 3 : return RETAILER;
+            case 3 : return ARCHITECTURE;
             default: return ANONYMOUS;
         }
     }

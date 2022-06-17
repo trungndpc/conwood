@@ -28,7 +28,7 @@ public class ZaloService {
     private static final String GET_ACCESS_TOKEN_URL = "https://oauth.zaloapp.com/v3/access_token?app_id={1}&app_secret={2}&code={3}";
     private static final String GET_USER_INFO = "https://graph.zalo.me/v2.0/me?fields=id,name,picture,birthday,gender&access_token=";
     private static final String END_POINT = "https://openapi.zalo.me/v2.0/oa/message?access_token={1}";
-    private static final String ZNS_END_POINT = "";
+    private static final String ZNS_END_POINT = "https://business.openapi.zalo.me/message/template";
 
     public ZaloService() {
         this.appConfig = BeanUtil.getBean(AppConfig.class);
@@ -91,6 +91,8 @@ public class ZaloService {
         headers.add("access_token", appConfig.ZALO_OA_ACCESS_TOKEN);
         HttpEntity<String> entity = new HttpEntity<>(form.toString(), headers);
         ResponseEntity<String> response = restTemplate.postForEntity(ZNS_END_POINT, entity, String.class);
+        LOGGER.error(form);
+        LOGGER.error(response);
         return response.getStatusCode() == HttpStatus.OK;
     }
 }

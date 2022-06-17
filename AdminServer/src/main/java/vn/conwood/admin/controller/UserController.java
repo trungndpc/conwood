@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import vn.conwood.admin.controller.dto.dashboard.CountUserDTO;
 import vn.conwood.admin.common.BaseResponse;
 import vn.conwood.admin.common.ErrorCode;
@@ -14,7 +15,9 @@ import vn.conwood.admin.controller.dto.PageDTO;
 import vn.conwood.admin.controller.dto.UserDTO;
 import vn.conwood.admin.controller.dto.metric.UserDataMetricDTO;
 import vn.conwood.admin.controller.form.CustomerForm;
+import vn.conwood.admin.controller.importer.CustomerExcelImporter;
 import vn.conwood.admin.service.UserService;
+import vn.conwood.common.Permission;
 import vn.conwood.common.status.StatusUser;
 import vn.conwood.jpa.entity.UserEntity;
 import vn.conwood.jpa.metric.UserCityMetric;
@@ -166,6 +169,33 @@ public class UserController {
             response.setData(dtos);
         }catch (Exception e) {
             LOGGER.error(e.getMessage());
+            response.setError(ErrorCode.FAILED);
+            response.setMsg(e.getMessage());
+        }
+        return ResponseEntity.ok(response);
+    }
+
+
+    @PostMapping("/upload-customer-excel")
+    public ResponseEntity<BaseResponse> uploadFile(@RequestParam("file") MultipartFile file) {
+        BaseResponse response = new BaseResponse();
+        try{
+            List<UserEntity> entityList = CustomerExcelImporter.INSTANCE.read(file.getInputStream());
+            if (entityList == null) {
+                throw new Exception("can not parse file");
+            }
+            if (entityList.size() <= 0) {
+                throw new Exception("file is empty");
+            }
+            entityList = entityList.stream().filter(user -> userService.findByPhone(user.getPhone()) == null)
+                    .collect(Collectors.toList());
+
+            for (UserEntity user: entityList) {
+                user.setStatus(StatusUser.WAITING_ACTIVE);
+                userService.saveOrUpdate(user);
+            }
+        }catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
             response.setError(ErrorCode.FAILED);
             response.setMsg(e.getMessage());
         }

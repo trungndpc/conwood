@@ -43,7 +43,7 @@ public class UserService {
         if (exitUserEntity != null) {
             throw new Exception("phone is exits!");
         }
-        customer.setRoleId(Permission.RETAILER.getId());
+        customer.setRoleId(Permission.ARCHITECTURE.getId());
         customer.setStatus(StatusUser.WAITING_ACTIVE);
         customer = userRepository.saveAndFlush(customer);
         return customer;
