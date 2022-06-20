@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import vn.conwood.admin.controller.converter.UserConverter;
 import vn.conwood.admin.service.UserService;
 import vn.conwood.admin.woker.Scheduler;
+import vn.conwood.admin.wrapper.ZaloService;
 import vn.conwood.jpa.repository.UserRepository;
 import vn.conwood.util.RenderUtils;
 
@@ -43,5 +46,4 @@ public class HomeController {
             IOException {
         return RenderUtils.render("index.html");
     }
-
 }
