@@ -19,7 +19,7 @@ import java.util.List;
 
 @Component
 public class ZNSBroadcastWorker {
-    private static final String TEMPLATE_ID = "227387";
+    private static final String TEMPLATE_ID = "228427";
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Autowired

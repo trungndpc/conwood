@@ -151,4 +151,10 @@ public class City {
         return MAP_ID_DISTRICT.get(id);
     }
 
+    public static void main(String[] args) {
+        Set<Integer> integers = MAP_ID_CITY.keySet();
+        Integer max = Collections.max(integers);
+        System.out.println(max);
+    }
+
 }

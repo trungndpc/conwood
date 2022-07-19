@@ -34,7 +34,7 @@ public class ZaloService {
     private static final String END_POINT = "https://openapi.zalo.me/v2.0/oa/message";
     private static final String ZNS_END_POINT = "https://business.openapi.zalo.me/message/template";
     private static final String REFRESH_TOKEN_URL = "https://oauth.zaloapp.com/v4/oa/access_token";
-    private static final int INVALID_ACCESS_TOKEN = -216;
+    private static final int INVALID_ACCESS_TOKEN = -124;
     private static final int SUCCESS = 0;
 
     public ZaloService() {
@@ -104,6 +104,7 @@ public class ZaloService {
             HttpEntity<String> entity = new HttpEntity<>(data, headers);
 
             responseEntity = restTemplate.postForEntity(entryPoint, entity, String.class);
+            LOGGER.error(responseEntity);
             JSONObject jsonObject = new JSONObject(responseEntity.getBody());
             int error = jsonObject.getInt("error");
             if (error == SUCCESS) {
