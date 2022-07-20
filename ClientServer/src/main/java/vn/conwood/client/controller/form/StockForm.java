@@ -15,6 +15,10 @@ public class StockForm {
     private String address;
     private String phone;
 
+    private Integer value;
+
+    private String storeName;
+
     public Integer getId() {
         return id;
     }
@@ -93,5 +97,21 @@ public class StockForm {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Integer getValue() {
+        return value;
+    }
+
+    public void setValue(Integer value) {
+        this.value = value;
+    }
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
     }
 }

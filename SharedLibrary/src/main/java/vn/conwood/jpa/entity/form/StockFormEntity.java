@@ -14,6 +14,10 @@ public class StockFormEntity extends FormEntity {
     private String address;
     private String phone;
 
+    private Integer value;
+
+    private String storeName;
+
     public String getJsonImage() {
         return jsonImage;
     }
@@ -44,5 +48,21 @@ public class StockFormEntity extends FormEntity {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Integer getValue() {
+        return value;
+    }
+
+    public void setValue(Integer value) {
+        this.value = value;
+    }
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
     }
 }
